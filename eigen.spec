@@ -4,7 +4,7 @@
 #
 Name     : eigen
 Version  : 3.2.5
-Release  : 4
+Release  : 5
 URL      : https://bitbucket.org/eigen/eigen/get/3.2.5.tar.bz2
 Source0  : https://bitbucket.org/eigen/eigen/get/3.2.5.tar.bz2
 Summary  : A C++ template library for linear algebra: vectors, matrices, and related algorithms
@@ -43,6 +43,13 @@ dev components for the eigen package.
 %build
 mkdir clr-build
 pushd clr-build
+export AR=gcc-ar
+export RANLIB=gcc-ranlib
+export NM=gcc-nm
+export CFLAGS="$CFLAGS -falign-functions=32 -flto -fno-semantic-interposition -O3 "
+export FCFLAGS="$CFLAGS -falign-functions=32 -flto -fno-semantic-interposition -O3 "
+export FFLAGS="$CFLAGS -falign-functions=32 -flto -fno-semantic-interposition -O3 "
+export CXXFLAGS="$CXXFLAGS -falign-functions=32 -flto -fno-semantic-interposition -O3 "
 cmake .. -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_SHARED_LIBS:BOOL=ON -DLIB_INSTALL_DIR:PATH=%{_libdir}
 make V=1  %{?_smp_mflags}
 popd

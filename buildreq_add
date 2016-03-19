@@ -1,2 +1,11 @@
 # This file contains additional build requirements that did not get
 # picked up automatically. One name per line, no whitespace.
+openblas
+pkg-config-dev
+gmp-dev
+mesa-dev
+mpfr-dev
+cmake
+fftw-dev
+glu-dev
+freeglut-dev

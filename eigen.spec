@@ -4,16 +4,21 @@
 #
 Name     : eigen
 Version  : 3.2.5
-Release  : 3
+Release  : 4
 URL      : https://bitbucket.org/eigen/eigen/get/3.2.5.tar.bz2
 Source0  : https://bitbucket.org/eigen/eigen/get/3.2.5.tar.bz2
 Summary  : A C++ template library for linear algebra: vectors, matrices, and related algorithms
 Group    : Development/Tools
-License  : BSD-3-Clause BSD-3-Clause-Attribution GPL-2.0 GPL-3.0 LGPL-2.1 MPL-2.0-no-copyleft-exception
+License  : BSD-3-Clause BSD-3-Clause-Attribution GPL-2.0 GPL-3.0 LGPL-2.1 MPL-2.0 MPL-2.0-no-copyleft-exception
 BuildRequires : cmake
+BuildRequires : fftw-dev
+BuildRequires : freeglut-dev
+BuildRequires : glu-dev
 BuildRequires : gmp-dev
 BuildRequires : mesa-dev
 BuildRequires : mpfr-dev
+BuildRequires : openblas
+BuildRequires : pkg-config-dev
 
 %description
 Navigation:
@@ -26,6 +31,7 @@ left button:           pan (translate in the XY camera's plane)
 %package dev
 Summary: dev components for the eigen package.
 Group: Development
+Provides: eigen-devel
 
 %description dev
 dev components for the eigen package.

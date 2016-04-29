@@ -4,7 +4,7 @@
 #
 Name     : eigen
 Version  : 3.2.5
-Release  : 5
+Release  : 6
 URL      : https://bitbucket.org/eigen/eigen/get/3.2.5.tar.bz2
 Source0  : https://bitbucket.org/eigen/eigen/get/3.2.5.tar.bz2
 Summary  : A C++ template library for linear algebra: vectors, matrices, and related algorithms

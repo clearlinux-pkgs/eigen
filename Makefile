@@ -1,5 +1,5 @@
 PKG_NAME := eigen
-URL := https://bitbucket.org/eigen/eigen/get/3.2.8.tar.gz
+URL := http://bitbucket.org/eigen/eigen/get/3.3-beta1.tar.bz2
 ARCHIVES :=
 
 include ../common/Makefile.common

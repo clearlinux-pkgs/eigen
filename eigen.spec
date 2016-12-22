@@ -4,12 +4,14 @@
 #
 Name     : eigen
 Version  : 1
-Release  : 9
-URL      : http://bitbucket.org/eigen/eigen/get/3.3-beta1.tar.bz2
-Source0  : http://bitbucket.org/eigen/eigen/get/3.3-beta1.tar.bz2
+Release  : 10
+URL      : http://bitbucket.org/eigen/eigen/get/3.3.1.tar.bz2
+Source0  : http://bitbucket.org/eigen/eigen/get/3.3.1.tar.bz2
 Summary  : A C++ template library for linear algebra: vectors, matrices, and related algorithms
 Group    : Development/Tools
 License  : BSD-3-Clause BSD-3-Clause-Attribution GPL-2.0 GPL-3.0 LGPL-2.1 MPL-2.0 MPL-2.0-no-copyleft-exception
+Requires: eigen-data
+BuildRequires : boost-dev
 BuildRequires : cmake
 BuildRequires : fftw-dev
 BuildRequires : freeglut-dev
@@ -28,9 +30,18 @@ left button + ctrl     quake rotate (rotate around camera position)
 middle button + ctrl   walk (progress along camera's z direction)
 left button:           pan (translate in the XY camera's plane)
 
+%package data
+Summary: data components for the eigen package.
+Group: Data
+
+%description data
+data components for the eigen package.
+
+
 %package dev
 Summary: dev components for the eigen package.
 Group: Development
+Requires: eigen-data
 Provides: eigen-devel
 
 %description dev
@@ -38,20 +49,18 @@ dev components for the eigen package.
 
 
 %prep
-%setup -q -n eigen-eigen-ce5a455b34c0
+%setup -q -n eigen-eigen-f562a193118d
 
 %build
+export LANG=C
 mkdir clr-build
 pushd clr-build
-export AR=gcc-ar
-export RANLIB=gcc-ranlib
-export NM=gcc-nm
-export CFLAGS="$CFLAGS -falign-functions=32 -fno-semantic-interposition -O3 -flto "
-export FCFLAGS="$CFLAGS -falign-functions=32 -fno-semantic-interposition -O3 -flto "
-export FFLAGS="$CFLAGS -falign-functions=32 -fno-semantic-interposition -O3 -flto "
-export CXXFLAGS="$CXXFLAGS -falign-functions=32 -fno-semantic-interposition -O3 -flto "
-cmake .. -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_SHARED_LIBS:BOOL=ON -DLIB_INSTALL_DIR:PATH=%{_libdir}
-make V=1  %{?_smp_mflags}
+export CFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-semantic-interposition "
+export FCFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-semantic-interposition "
+export FFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-semantic-interposition "
+export CXXFLAGS="$CXXFLAGS -O3 -falign-functions=32 -fno-semantic-interposition "
+cmake .. -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_SHARED_LIBS:BOOL=ON -DLIB_INSTALL_DIR:PATH=%{_libdir} -DCMAKE_AR=/usr/bin/gcc-ar -DLIB_SUFFIX=64 -DCMAKE_RANLIB=/usr/bin/gcc-ranlib
+make VERBOSE=1  %{?_smp_mflags}
 popd
 
 %install
@@ -62,8 +71,13 @@ popd
 
 %files
 %defattr(-,root,root,-)
-/usr/lib64/cmake/eigen3/Eigen3Config.cmake
-/usr/lib64/cmake/eigen3/UseEigen3.cmake
+
+%files data
+%defattr(-,root,root,-)
+/usr/share/eigen3/cmake/Eigen3Config.cmake
+/usr/share/eigen3/cmake/Eigen3ConfigVersion.cmake
+/usr/share/eigen3/cmake/Eigen3Targets.cmake
+/usr/share/eigen3/cmake/UseEigen3.cmake
 
 %files dev
 %defattr(-,root,root,-)
@@ -98,7 +112,7 @@ popd
 /usr/include/eigen3/Eigen/UmfPackSupport
 /usr/include/eigen3/Eigen/src/Cholesky/LDLT.h
 /usr/include/eigen3/Eigen/src/Cholesky/LLT.h
-/usr/include/eigen3/Eigen/src/Cholesky/LLT_MKL.h
+/usr/include/eigen3/Eigen/src/Cholesky/LLT_LAPACKE.h
 /usr/include/eigen3/Eigen/src/CholmodSupport/CholmodSupport.h
 /usr/include/eigen3/Eigen/src/Core/Array.h
 /usr/include/eigen3/Eigen/src/Core/ArrayBase.h
@@ -110,10 +124,12 @@ popd
 /usr/include/eigen3/Eigen/src/Core/Block.h
 /usr/include/eigen3/Eigen/src/Core/BooleanRedux.h
 /usr/include/eigen3/Eigen/src/Core/CommaInitializer.h
+/usr/include/eigen3/Eigen/src/Core/ConditionEstimator.h
 /usr/include/eigen3/Eigen/src/Core/CoreEvaluators.h
 /usr/include/eigen3/Eigen/src/Core/CoreIterators.h
 /usr/include/eigen3/Eigen/src/Core/CwiseBinaryOp.h
 /usr/include/eigen3/Eigen/src/Core/CwiseNullaryOp.h
+/usr/include/eigen3/Eigen/src/Core/CwiseTernaryOp.h
 /usr/include/eigen3/Eigen/src/Core/CwiseUnaryOp.h
 /usr/include/eigen3/Eigen/src/Core/CwiseUnaryView.h
 /usr/include/eigen3/Eigen/src/Core/DenseBase.h
@@ -134,6 +150,7 @@ popd
 /usr/include/eigen3/Eigen/src/Core/Map.h
 /usr/include/eigen3/Eigen/src/Core/MapBase.h
 /usr/include/eigen3/Eigen/src/Core/MathFunctions.h
+/usr/include/eigen3/Eigen/src/Core/MathFunctionsImpl.h
 /usr/include/eigen3/Eigen/src/Core/Matrix.h
 /usr/include/eigen3/Eigen/src/Core/MatrixBase.h
 /usr/include/eigen3/Eigen/src/Core/NestByValue.h
@@ -155,7 +172,6 @@ popd
 /usr/include/eigen3/Eigen/src/Core/Solve.h
 /usr/include/eigen3/Eigen/src/Core/SolveTriangular.h
 /usr/include/eigen3/Eigen/src/Core/SolverBase.h
-/usr/include/eigen3/Eigen/src/Core/SpecialFunctions.h
 /usr/include/eigen3/Eigen/src/Core/StableNorm.h
 /usr/include/eigen3/Eigen/src/Core/Stride.h
 /usr/include/eigen3/Eigen/src/Core/Swap.h
@@ -169,11 +185,17 @@ popd
 /usr/include/eigen3/Eigen/src/Core/arch/AVX/MathFunctions.h
 /usr/include/eigen3/Eigen/src/Core/arch/AVX/PacketMath.h
 /usr/include/eigen3/Eigen/src/Core/arch/AVX/TypeCasting.h
+/usr/include/eigen3/Eigen/src/Core/arch/AVX512/MathFunctions.h
+/usr/include/eigen3/Eigen/src/Core/arch/AVX512/PacketMath.h
 /usr/include/eigen3/Eigen/src/Core/arch/AltiVec/Complex.h
 /usr/include/eigen3/Eigen/src/Core/arch/AltiVec/MathFunctions.h
 /usr/include/eigen3/Eigen/src/Core/arch/AltiVec/PacketMath.h
+/usr/include/eigen3/Eigen/src/Core/arch/CUDA/Complex.h
+/usr/include/eigen3/Eigen/src/Core/arch/CUDA/Half.h
 /usr/include/eigen3/Eigen/src/Core/arch/CUDA/MathFunctions.h
 /usr/include/eigen3/Eigen/src/Core/arch/CUDA/PacketMath.h
+/usr/include/eigen3/Eigen/src/Core/arch/CUDA/PacketMathHalf.h
+/usr/include/eigen3/Eigen/src/Core/arch/CUDA/TypeCasting.h
 /usr/include/eigen3/Eigen/src/Core/arch/Default/Settings.h
 /usr/include/eigen3/Eigen/src/Core/arch/NEON/Complex.h
 /usr/include/eigen3/Eigen/src/Core/arch/NEON/MathFunctions.h
@@ -182,31 +204,35 @@ popd
 /usr/include/eigen3/Eigen/src/Core/arch/SSE/MathFunctions.h
 /usr/include/eigen3/Eigen/src/Core/arch/SSE/PacketMath.h
 /usr/include/eigen3/Eigen/src/Core/arch/SSE/TypeCasting.h
+/usr/include/eigen3/Eigen/src/Core/arch/ZVector/Complex.h
+/usr/include/eigen3/Eigen/src/Core/arch/ZVector/MathFunctions.h
+/usr/include/eigen3/Eigen/src/Core/arch/ZVector/PacketMath.h
 /usr/include/eigen3/Eigen/src/Core/functors/AssignmentFunctors.h
 /usr/include/eigen3/Eigen/src/Core/functors/BinaryFunctors.h
 /usr/include/eigen3/Eigen/src/Core/functors/NullaryFunctors.h
 /usr/include/eigen3/Eigen/src/Core/functors/StlFunctors.h
+/usr/include/eigen3/Eigen/src/Core/functors/TernaryFunctors.h
 /usr/include/eigen3/Eigen/src/Core/functors/UnaryFunctors.h
 /usr/include/eigen3/Eigen/src/Core/products/GeneralBlockPanelKernel.h
 /usr/include/eigen3/Eigen/src/Core/products/GeneralMatrixMatrix.h
 /usr/include/eigen3/Eigen/src/Core/products/GeneralMatrixMatrixTriangular.h
-/usr/include/eigen3/Eigen/src/Core/products/GeneralMatrixMatrixTriangular_MKL.h
-/usr/include/eigen3/Eigen/src/Core/products/GeneralMatrixMatrix_MKL.h
+/usr/include/eigen3/Eigen/src/Core/products/GeneralMatrixMatrixTriangular_BLAS.h
+/usr/include/eigen3/Eigen/src/Core/products/GeneralMatrixMatrix_BLAS.h
 /usr/include/eigen3/Eigen/src/Core/products/GeneralMatrixVector.h
-/usr/include/eigen3/Eigen/src/Core/products/GeneralMatrixVector_MKL.h
+/usr/include/eigen3/Eigen/src/Core/products/GeneralMatrixVector_BLAS.h
 /usr/include/eigen3/Eigen/src/Core/products/Parallelizer.h
 /usr/include/eigen3/Eigen/src/Core/products/SelfadjointMatrixMatrix.h
-/usr/include/eigen3/Eigen/src/Core/products/SelfadjointMatrixMatrix_MKL.h
+/usr/include/eigen3/Eigen/src/Core/products/SelfadjointMatrixMatrix_BLAS.h
 /usr/include/eigen3/Eigen/src/Core/products/SelfadjointMatrixVector.h
-/usr/include/eigen3/Eigen/src/Core/products/SelfadjointMatrixVector_MKL.h
+/usr/include/eigen3/Eigen/src/Core/products/SelfadjointMatrixVector_BLAS.h
 /usr/include/eigen3/Eigen/src/Core/products/SelfadjointProduct.h
 /usr/include/eigen3/Eigen/src/Core/products/SelfadjointRank2Update.h
 /usr/include/eigen3/Eigen/src/Core/products/TriangularMatrixMatrix.h
-/usr/include/eigen3/Eigen/src/Core/products/TriangularMatrixMatrix_MKL.h
+/usr/include/eigen3/Eigen/src/Core/products/TriangularMatrixMatrix_BLAS.h
 /usr/include/eigen3/Eigen/src/Core/products/TriangularMatrixVector.h
-/usr/include/eigen3/Eigen/src/Core/products/TriangularMatrixVector_MKL.h
+/usr/include/eigen3/Eigen/src/Core/products/TriangularMatrixVector_BLAS.h
 /usr/include/eigen3/Eigen/src/Core/products/TriangularSolverMatrix.h
-/usr/include/eigen3/Eigen/src/Core/products/TriangularSolverMatrix_MKL.h
+/usr/include/eigen3/Eigen/src/Core/products/TriangularSolverMatrix_BLAS.h
 /usr/include/eigen3/Eigen/src/Core/products/TriangularSolverVector.h
 /usr/include/eigen3/Eigen/src/Core/util/BlasUtil.h
 /usr/include/eigen3/Eigen/src/Core/util/Constants.h
@@ -222,7 +248,7 @@ popd
 /usr/include/eigen3/Eigen/src/Core/util/XprHelper.h
 /usr/include/eigen3/Eigen/src/Eigenvalues/ComplexEigenSolver.h
 /usr/include/eigen3/Eigen/src/Eigenvalues/ComplexSchur.h
-/usr/include/eigen3/Eigen/src/Eigenvalues/ComplexSchur_MKL.h
+/usr/include/eigen3/Eigen/src/Eigenvalues/ComplexSchur_LAPACKE.h
 /usr/include/eigen3/Eigen/src/Eigenvalues/EigenSolver.h
 /usr/include/eigen3/Eigen/src/Eigenvalues/GeneralizedEigenSolver.h
 /usr/include/eigen3/Eigen/src/Eigenvalues/GeneralizedSelfAdjointEigenSolver.h
@@ -230,9 +256,9 @@ popd
 /usr/include/eigen3/Eigen/src/Eigenvalues/MatrixBaseEigenvalues.h
 /usr/include/eigen3/Eigen/src/Eigenvalues/RealQZ.h
 /usr/include/eigen3/Eigen/src/Eigenvalues/RealSchur.h
-/usr/include/eigen3/Eigen/src/Eigenvalues/RealSchur_MKL.h
+/usr/include/eigen3/Eigen/src/Eigenvalues/RealSchur_LAPACKE.h
 /usr/include/eigen3/Eigen/src/Eigenvalues/SelfAdjointEigenSolver.h
-/usr/include/eigen3/Eigen/src/Eigenvalues/SelfAdjointEigenSolver_MKL.h
+/usr/include/eigen3/Eigen/src/Eigenvalues/SelfAdjointEigenSolver_LAPACKE.h
 /usr/include/eigen3/Eigen/src/Eigenvalues/Tridiagonalization.h
 /usr/include/eigen3/Eigen/src/Geometry/AlignedBox.h
 /usr/include/eigen3/Eigen/src/Geometry/AngleAxis.h
@@ -265,7 +291,7 @@ popd
 /usr/include/eigen3/Eigen/src/LU/FullPivLU.h
 /usr/include/eigen3/Eigen/src/LU/InverseImpl.h
 /usr/include/eigen3/Eigen/src/LU/PartialPivLU.h
-/usr/include/eigen3/Eigen/src/LU/PartialPivLU_MKL.h
+/usr/include/eigen3/Eigen/src/LU/PartialPivLU_LAPACKE.h
 /usr/include/eigen3/Eigen/src/LU/arch/Inverse_SSE.h
 /usr/include/eigen3/Eigen/src/MetisSupport/MetisSupport.h
 /usr/include/eigen3/Eigen/src/OrderingMethods/Amd.h
@@ -274,14 +300,15 @@ popd
 /usr/include/eigen3/Eigen/src/PaStiXSupport/PaStiXSupport.h
 /usr/include/eigen3/Eigen/src/PardisoSupport/PardisoSupport.h
 /usr/include/eigen3/Eigen/src/QR/ColPivHouseholderQR.h
-/usr/include/eigen3/Eigen/src/QR/ColPivHouseholderQR_MKL.h
+/usr/include/eigen3/Eigen/src/QR/ColPivHouseholderQR_LAPACKE.h
+/usr/include/eigen3/Eigen/src/QR/CompleteOrthogonalDecomposition.h
 /usr/include/eigen3/Eigen/src/QR/FullPivHouseholderQR.h
 /usr/include/eigen3/Eigen/src/QR/HouseholderQR.h
-/usr/include/eigen3/Eigen/src/QR/HouseholderQR_MKL.h
+/usr/include/eigen3/Eigen/src/QR/HouseholderQR_LAPACKE.h
 /usr/include/eigen3/Eigen/src/SPQRSupport/SuiteSparseQRSupport.h
 /usr/include/eigen3/Eigen/src/SVD/BDCSVD.h
 /usr/include/eigen3/Eigen/src/SVD/JacobiSVD.h
-/usr/include/eigen3/Eigen/src/SVD/JacobiSVD_MKL.h
+/usr/include/eigen3/Eigen/src/SVD/JacobiSVD_LAPACKE.h
 /usr/include/eigen3/Eigen/src/SVD/SVDBase.h
 /usr/include/eigen3/Eigen/src/SVD/UpperBidiagonalization.h
 /usr/include/eigen3/Eigen/src/SparseCholesky/SimplicialCholesky.h
@@ -342,7 +369,11 @@ popd
 /usr/include/eigen3/Eigen/src/UmfPackSupport/UmfPackSupport.h
 /usr/include/eigen3/Eigen/src/misc/Image.h
 /usr/include/eigen3/Eigen/src/misc/Kernel.h
+/usr/include/eigen3/Eigen/src/misc/RealSvd2x2.h
 /usr/include/eigen3/Eigen/src/misc/blas.h
+/usr/include/eigen3/Eigen/src/misc/lapack.h
+/usr/include/eigen3/Eigen/src/misc/lapacke.h
+/usr/include/eigen3/Eigen/src/misc/lapacke_mangling.h
 /usr/include/eigen3/Eigen/src/plugins/ArrayCwiseBinaryOps.h
 /usr/include/eigen3/Eigen/src/plugins/ArrayCwiseUnaryOps.h
 /usr/include/eigen3/Eigen/src/plugins/BlockMethods.h
@@ -356,13 +387,9 @@ popd
 /usr/include/eigen3/unsupported/Eigen/ArpackSupport
 /usr/include/eigen3/unsupported/Eigen/AutoDiff
 /usr/include/eigen3/unsupported/Eigen/BVH
-/usr/include/eigen3/unsupported/Eigen/CXX11/Core
 /usr/include/eigen3/unsupported/Eigen/CXX11/Tensor
 /usr/include/eigen3/unsupported/Eigen/CXX11/TensorSymmetry
-/usr/include/eigen3/unsupported/Eigen/CXX11/src/Core/util/CXX11Meta.h
-/usr/include/eigen3/unsupported/Eigen/CXX11/src/Core/util/CXX11Workarounds.h
-/usr/include/eigen3/unsupported/Eigen/CXX11/src/Core/util/EmulateArray.h
-/usr/include/eigen3/unsupported/Eigen/CXX11/src/Core/util/EmulateCXX11Meta.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/ThreadPool
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/Tensor.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorArgMax.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorAssign.h
@@ -371,14 +398,18 @@ popd
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorChipping.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorConcatenation.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorContraction.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorContractionBlocking.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorContractionCuda.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorContractionMapper.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorContractionThreadPool.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorConversion.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorConvolution.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorCostModel.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorCustomOp.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorDevice.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorDeviceCuda.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorDeviceDefault.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorDeviceSycl.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorDeviceThreadPool.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorDimensionList.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorDimensions.h
@@ -392,6 +423,7 @@ popd
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorForwardDeclarations.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorFunctors.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorGenerator.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorGlobalFunctions.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorIO.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorImagePatch.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorIndexList.h
@@ -405,13 +437,25 @@ popd
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorMorphing.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorPadding.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorPatch.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorRandom.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorReduction.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorReductionCuda.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorReductionSycl.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorRef.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorReverse.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorScan.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorShuffling.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorStorage.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorStriding.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorSycl.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorSyclConvertToDeviceExpression.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorSyclExprConstructor.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorSyclExtractAccessor.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorSyclExtractFunctors.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorSyclLeafCount.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorSyclPlaceHolderExpr.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorSyclRun.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorSyclTuple.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorTraits.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorUInt128.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorVolumePatch.h
@@ -419,6 +463,20 @@ popd
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/TensorSymmetry/StaticSymmetry.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/TensorSymmetry/Symmetry.h
 /usr/include/eigen3/unsupported/Eigen/CXX11/src/TensorSymmetry/util/TemplateGroupTheory.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/ThreadPool/EventCount.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/ThreadPool/NonBlockingThreadPool.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/ThreadPool/RunQueue.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/ThreadPool/SimpleThreadPool.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/ThreadPool/ThreadEnvironment.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/ThreadPool/ThreadLocal.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/ThreadPool/ThreadPoolInterface.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/ThreadPool/ThreadYield.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/util/CXX11Meta.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/util/CXX11Workarounds.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/util/EmulateArray.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/util/EmulateCXX11Meta.h
+/usr/include/eigen3/unsupported/Eigen/CXX11/src/util/MaxSizeVector.h
+/usr/include/eigen3/unsupported/Eigen/EulerAngles
 /usr/include/eigen3/unsupported/Eigen/FFT
 /usr/include/eigen3/unsupported/Eigen/IterativeSolvers
 /usr/include/eigen3/unsupported/Eigen/KroneckerProduct
@@ -432,6 +490,7 @@ popd
 /usr/include/eigen3/unsupported/Eigen/Polynomials
 /usr/include/eigen3/unsupported/Eigen/Skyline
 /usr/include/eigen3/unsupported/Eigen/SparseExtra
+/usr/include/eigen3/unsupported/Eigen/SpecialFunctions
 /usr/include/eigen3/unsupported/Eigen/Splines
 /usr/include/eigen3/unsupported/Eigen/src/AutoDiff/AutoDiffJacobian.h
 /usr/include/eigen3/unsupported/Eigen/src/AutoDiff/AutoDiffScalar.h
@@ -439,6 +498,8 @@ popd
 /usr/include/eigen3/unsupported/Eigen/src/BVH/BVAlgorithms.h
 /usr/include/eigen3/unsupported/Eigen/src/BVH/KdBVH.h
 /usr/include/eigen3/unsupported/Eigen/src/Eigenvalues/ArpackSelfAdjointEigenSolver.h
+/usr/include/eigen3/unsupported/Eigen/src/EulerAngles/EulerAngles.h
+/usr/include/eigen3/unsupported/Eigen/src/EulerAngles/EulerSystem.h
 /usr/include/eigen3/unsupported/Eigen/src/FFT/ei_fftw_impl.h
 /usr/include/eigen3/unsupported/Eigen/src/FFT/ei_kissfft_impl.h
 /usr/include/eigen3/unsupported/Eigen/src/IterativeSolvers/ConstrainedConjGrad.h
@@ -488,7 +549,13 @@ popd
 /usr/include/eigen3/unsupported/Eigen/src/SparseExtra/MarketIO.h
 /usr/include/eigen3/unsupported/Eigen/src/SparseExtra/MatrixMarketIterator.h
 /usr/include/eigen3/unsupported/Eigen/src/SparseExtra/RandomSetter.h
+/usr/include/eigen3/unsupported/Eigen/src/SpecialFunctions/SpecialFunctionsArrayAPI.h
+/usr/include/eigen3/unsupported/Eigen/src/SpecialFunctions/SpecialFunctionsFunctors.h
+/usr/include/eigen3/unsupported/Eigen/src/SpecialFunctions/SpecialFunctionsHalf.h
+/usr/include/eigen3/unsupported/Eigen/src/SpecialFunctions/SpecialFunctionsImpl.h
+/usr/include/eigen3/unsupported/Eigen/src/SpecialFunctions/SpecialFunctionsPacketMath.h
+/usr/include/eigen3/unsupported/Eigen/src/SpecialFunctions/arch/CUDA/CudaSpecialFunctions.h
 /usr/include/eigen3/unsupported/Eigen/src/Splines/Spline.h
 /usr/include/eigen3/unsupported/Eigen/src/Splines/SplineFitting.h
 /usr/include/eigen3/unsupported/Eigen/src/Splines/SplineFwd.h
-/usr/lib64/pkgconfig/*.pc
+/usr/lib64/pkgconfig/eigen3.pc

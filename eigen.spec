@@ -4,9 +4,9 @@
 #
 Name     : eigen
 Version  : 3.3.3
-Release  : 13
-URL      : http://bitbucket.org/eigen/eigen/get/3.3.3.tar.bz2
-Source0  : http://bitbucket.org/eigen/eigen/get/3.3.3.tar.bz2
+Release  : 14
+URL      : https://bitbucket.org/eigen/eigen/get/3.3.3.tar.bz2
+Source0  : https://bitbucket.org/eigen/eigen/get/3.3.3.tar.bz2
 Summary  : A C++ template library for linear algebra: vectors, matrices, and related algorithms
 Group    : Development/Tools
 License  : BSD-3-Clause BSD-3-Clause-Attribution GPL-2.0 GPL-3.0 LGPL-2.1 MPL-2.0 MPL-2.0-no-copyleft-exception
@@ -53,7 +53,7 @@ dev components for the eigen package.
 
 %build
 export LANG=C
-export SOURCE_DATE_EPOCH=1490826201
+export SOURCE_DATE_EPOCH=1491427094
 mkdir clr-build
 pushd clr-build
 export CFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-semantic-interposition "
@@ -65,7 +65,7 @@ make VERBOSE=1  %{?_smp_mflags}
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1490826201
+export SOURCE_DATE_EPOCH=1491427094
 rm -rf %{buildroot}
 pushd clr-build
 %make_install

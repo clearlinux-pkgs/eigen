@@ -9,3 +9,5 @@ cmake
 fftw-dev
 glu-dev
 freeglut-dev
+SuiteSparse-dev
+buildreq-kde

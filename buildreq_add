@@ -11,3 +11,4 @@ glu-dev
 freeglut-dev
 SuiteSparse-dev
 buildreq-kde
+opencl-headers-dev

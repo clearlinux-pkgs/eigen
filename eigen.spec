@@ -4,7 +4,7 @@
 #
 Name     : eigen
 Version  : 3.3.7
-Release  : 23
+Release  : 24
 URL      : https://bitbucket.org/eigen/eigen/get/3.3.7.tar.bz2
 Source0  : https://bitbucket.org/eigen/eigen/get/3.3.7.tar.bz2
 Summary  : A C++ template library for linear algebra: vectors, matrices, and related algorithms
@@ -13,9 +13,9 @@ License  : BSD-3-Clause BSD-3-Clause-Attribution GPL-2.0 GPL-3.0 LGPL-2.1 MPL-2.
 Requires: eigen-data = %{version}-%{release}
 Requires: eigen-license = %{version}-%{release}
 BuildRequires : SuiteSparse-dev
-BuildRequires : beignet-dev
 BuildRequires : boost-dev
 BuildRequires : buildreq-cmake
+BuildRequires : buildreq-kde
 BuildRequires : cmake
 BuildRequires : fftw-dev
 BuildRequires : freeglut-dev
@@ -26,18 +26,15 @@ BuildRequires : gmp-dev
 BuildRequires : mesa-dev
 BuildRequires : mpfr-dev
 BuildRequires : openblas
+BuildRequires : opencl-headers-dev
 BuildRequires : openmpi-dev
 BuildRequires : pkg-config
 BuildRequires : pkg-config-dev
 BuildRequires : python3
 
 %description
-Navigation:
-left button:           rotate around the target
-middle button:         zoom
-left button + ctrl     quake rotate (rotate around camera position)
-middle button + ctrl   walk (progress along camera's z direction)
-left button:           pan (translate in the XY camera's plane)
+The tensor benchmark suite is made of several parts.
+The first part is a generic suite, in which each benchmark comes in 2 flavors: one that runs on CPU, and one that runs on GPU.
 
 %package data
 Summary: data components for the eigen package.
@@ -52,6 +49,7 @@ Summary: dev components for the eigen package.
 Group: Development
 Requires: eigen-data = %{version}-%{release}
 Provides: eigen-devel = %{version}-%{release}
+Requires: eigen = %{version}-%{release}
 
 %description dev
 dev components for the eigen package.
@@ -73,19 +71,20 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1544709520
+export SOURCE_DATE_EPOCH=1562002586
 mkdir -p clr-build
 pushd clr-build
-export CFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
-export FCFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
-export FFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
-export CXXFLAGS="$CXXFLAGS -O3 -falign-functions=32 -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
+export GCC_IGNORE_WERROR=1
+export CFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-lto -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
+export FCFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-lto -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
+export FFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-lto -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
+export CXXFLAGS="$CXXFLAGS -O3 -falign-functions=32 -fno-lto -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 %cmake ..
-make  %{?_smp_mflags}
+make  %{?_smp_mflags} VERBOSE=1
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1544709520
+export SOURCE_DATE_EPOCH=1562002586
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/eigen
 cp COPYING.BSD %{buildroot}/usr/share/package-licenses/eigen/COPYING.BSD

@@ -4,7 +4,7 @@
 #
 Name     : eigen
 Version  : 3.3.7
-Release  : 25
+Release  : 26
 URL      : https://bitbucket.org/eigen/eigen/get/3.3.7.tar.bz2
 Source0  : https://bitbucket.org/eigen/eigen/get/3.3.7.tar.bz2
 Summary  : A C++ template library for linear algebra: vectors, matrices, and related algorithms
@@ -33,8 +33,12 @@ BuildRequires : pkg-config-dev
 BuildRequires : python3
 
 %description
-The tensor benchmark suite is made of several parts.
-The first part is a generic suite, in which each benchmark comes in 2 flavors: one that runs on CPU, and one that runs on GPU.
+Navigation:
+left button:           rotate around the target
+middle button:         zoom
+left button + ctrl     quake rotate (rotate around camera position)
+middle button + ctrl   walk (progress along camera's z direction)
+left button:           pan (translate in the XY camera's plane)
 
 %package data
 Summary: data components for the eigen package.
@@ -65,35 +69,36 @@ license components for the eigen package.
 
 %prep
 %setup -q -n eigen-eigen-323c052e1731
+cd %{_builddir}/eigen-eigen-323c052e1731
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1562002586
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1592617901
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
 export CFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-lto -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
-export FCFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-lto -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
-export FFLAGS="$CFLAGS -O3 -falign-functions=32 -fno-lto -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
+export FCFLAGS="$FFLAGS -O3 -falign-functions=32 -fno-lto -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
+export FFLAGS="$FFLAGS -O3 -falign-functions=32 -fno-lto -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 export CXXFLAGS="$CXXFLAGS -O3 -falign-functions=32 -fno-lto -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 %cmake ..
-make  %{?_smp_mflags} VERBOSE=1
+make  %{?_smp_mflags}  VERBOSE=1
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1562002586
+export SOURCE_DATE_EPOCH=1592617901
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/eigen
-cp COPYING.BSD %{buildroot}/usr/share/package-licenses/eigen/COPYING.BSD
-cp COPYING.GPL %{buildroot}/usr/share/package-licenses/eigen/COPYING.GPL
-cp COPYING.LGPL %{buildroot}/usr/share/package-licenses/eigen/COPYING.LGPL
-cp COPYING.MINPACK %{buildroot}/usr/share/package-licenses/eigen/COPYING.MINPACK
-cp COPYING.MPL2 %{buildroot}/usr/share/package-licenses/eigen/COPYING.MPL2
-cp COPYING.README %{buildroot}/usr/share/package-licenses/eigen/COPYING.README
-cp bench/btl/COPYING %{buildroot}/usr/share/package-licenses/eigen/bench_btl_COPYING
+cp %{_builddir}/eigen-eigen-323c052e1731/COPYING.BSD %{buildroot}/usr/share/package-licenses/eigen/8fa159b3e41e0a44e10ea224cbb83e66ae02885e
+cp %{_builddir}/eigen-eigen-323c052e1731/COPYING.GPL %{buildroot}/usr/share/package-licenses/eigen/8624bcdae55baeef00cd11d5dfcfa60f68710a02
+cp %{_builddir}/eigen-eigen-323c052e1731/COPYING.LGPL %{buildroot}/usr/share/package-licenses/eigen/01a6b4bf79aca9b556822601186afab86e8c4fbf
+cp %{_builddir}/eigen-eigen-323c052e1731/COPYING.MINPACK %{buildroot}/usr/share/package-licenses/eigen/df73e10dcfd2d05667e6fe85cabe5dfe3c984727
+cp %{_builddir}/eigen-eigen-323c052e1731/COPYING.MPL2 %{buildroot}/usr/share/package-licenses/eigen/9744cedce099f727b327cd9913a1fdc58a7f5599
+cp %{_builddir}/eigen-eigen-323c052e1731/COPYING.README %{buildroot}/usr/share/package-licenses/eigen/a7584db2e76a50884b3fe13360f2e6a354f5bedf
+cp %{_builddir}/eigen-eigen-323c052e1731/bench/btl/COPYING %{buildroot}/usr/share/package-licenses/eigen/0adba118df234d6b733bf662d159b55846231417
 pushd clr-build
 %make_install
 popd
@@ -592,10 +597,10 @@ popd
 
 %files license
 %defattr(0644,root,root,0755)
-/usr/share/package-licenses/eigen/COPYING.BSD
-/usr/share/package-licenses/eigen/COPYING.GPL
-/usr/share/package-licenses/eigen/COPYING.LGPL
-/usr/share/package-licenses/eigen/COPYING.MINPACK
-/usr/share/package-licenses/eigen/COPYING.MPL2
-/usr/share/package-licenses/eigen/COPYING.README
-/usr/share/package-licenses/eigen/bench_btl_COPYING
+/usr/share/package-licenses/eigen/01a6b4bf79aca9b556822601186afab86e8c4fbf
+/usr/share/package-licenses/eigen/0adba118df234d6b733bf662d159b55846231417
+/usr/share/package-licenses/eigen/8624bcdae55baeef00cd11d5dfcfa60f68710a02
+/usr/share/package-licenses/eigen/8fa159b3e41e0a44e10ea224cbb83e66ae02885e
+/usr/share/package-licenses/eigen/9744cedce099f727b327cd9913a1fdc58a7f5599
+/usr/share/package-licenses/eigen/a7584db2e76a50884b3fe13360f2e6a354f5bedf
+/usr/share/package-licenses/eigen/df73e10dcfd2d05667e6fe85cabe5dfe3c984727

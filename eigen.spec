@@ -4,9 +4,9 @@
 #
 Name     : eigen
 Version  : 3.3.7
-Release  : 26
-URL      : https://bitbucket.org/eigen/eigen/get/3.3.7.tar.bz2
-Source0  : https://bitbucket.org/eigen/eigen/get/3.3.7.tar.bz2
+Release  : 27
+URL      : https://gitlab.com/libeigen/eigen/-/archive/3.3.7/eigen-3.3.7.tar.gz
+Source0  : https://gitlab.com/libeigen/eigen/-/archive/3.3.7/eigen-3.3.7.tar.gz
 Summary  : A C++ template library for linear algebra: vectors, matrices, and related algorithms
 Group    : Development/Tools
 License  : BSD-3-Clause BSD-3-Clause-Attribution GPL-2.0 GPL-3.0 LGPL-2.1 MPL-2.0 MPL-2.0-no-copyleft-exception
@@ -68,15 +68,15 @@ license components for the eigen package.
 
 
 %prep
-%setup -q -n eigen-eigen-323c052e1731
-cd %{_builddir}/eigen-eigen-323c052e1731
+%setup -q -n eigen-3.3.7
+cd %{_builddir}/eigen-3.3.7
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1592617901
+export SOURCE_DATE_EPOCH=1598321001
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -85,20 +85,20 @@ export FCFLAGS="$FFLAGS -O3 -falign-functions=32 -fno-lto -fno-math-errno -fno-s
 export FFLAGS="$FFLAGS -O3 -falign-functions=32 -fno-lto -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 export CXXFLAGS="$CXXFLAGS -O3 -falign-functions=32 -fno-lto -fno-math-errno -fno-semantic-interposition -fno-trapping-math "
 %cmake ..
-make  %{?_smp_mflags}  VERBOSE=1
+make  %{?_smp_mflags}
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1592617901
+export SOURCE_DATE_EPOCH=1598321001
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/eigen
-cp %{_builddir}/eigen-eigen-323c052e1731/COPYING.BSD %{buildroot}/usr/share/package-licenses/eigen/8fa159b3e41e0a44e10ea224cbb83e66ae02885e
-cp %{_builddir}/eigen-eigen-323c052e1731/COPYING.GPL %{buildroot}/usr/share/package-licenses/eigen/8624bcdae55baeef00cd11d5dfcfa60f68710a02
-cp %{_builddir}/eigen-eigen-323c052e1731/COPYING.LGPL %{buildroot}/usr/share/package-licenses/eigen/01a6b4bf79aca9b556822601186afab86e8c4fbf
-cp %{_builddir}/eigen-eigen-323c052e1731/COPYING.MINPACK %{buildroot}/usr/share/package-licenses/eigen/df73e10dcfd2d05667e6fe85cabe5dfe3c984727
-cp %{_builddir}/eigen-eigen-323c052e1731/COPYING.MPL2 %{buildroot}/usr/share/package-licenses/eigen/9744cedce099f727b327cd9913a1fdc58a7f5599
-cp %{_builddir}/eigen-eigen-323c052e1731/COPYING.README %{buildroot}/usr/share/package-licenses/eigen/a7584db2e76a50884b3fe13360f2e6a354f5bedf
-cp %{_builddir}/eigen-eigen-323c052e1731/bench/btl/COPYING %{buildroot}/usr/share/package-licenses/eigen/0adba118df234d6b733bf662d159b55846231417
+cp %{_builddir}/eigen-3.3.7/COPYING.BSD %{buildroot}/usr/share/package-licenses/eigen/8fa159b3e41e0a44e10ea224cbb83e66ae02885e
+cp %{_builddir}/eigen-3.3.7/COPYING.GPL %{buildroot}/usr/share/package-licenses/eigen/8624bcdae55baeef00cd11d5dfcfa60f68710a02
+cp %{_builddir}/eigen-3.3.7/COPYING.LGPL %{buildroot}/usr/share/package-licenses/eigen/01a6b4bf79aca9b556822601186afab86e8c4fbf
+cp %{_builddir}/eigen-3.3.7/COPYING.MINPACK %{buildroot}/usr/share/package-licenses/eigen/df73e10dcfd2d05667e6fe85cabe5dfe3c984727
+cp %{_builddir}/eigen-3.3.7/COPYING.MPL2 %{buildroot}/usr/share/package-licenses/eigen/9744cedce099f727b327cd9913a1fdc58a7f5599
+cp %{_builddir}/eigen-3.3.7/COPYING.README %{buildroot}/usr/share/package-licenses/eigen/a7584db2e76a50884b3fe13360f2e6a354f5bedf
+cp %{_builddir}/eigen-3.3.7/bench/btl/COPYING %{buildroot}/usr/share/package-licenses/eigen/0adba118df234d6b733bf662d159b55846231417
 pushd clr-build
 %make_install
 popd

@@ -4,7 +4,7 @@
 #
 Name     : eigen
 Version  : 3.3.9
-Release  : 29
+Release  : 30
 URL      : https://gitlab.com/libeigen/eigen/-/archive/3.3.9/eigen-3.3.9.tar.gz
 Source0  : https://gitlab.com/libeigen/eigen/-/archive/3.3.9/eigen-3.3.9.tar.gz
 Summary  : A C++ template library for linear algebra: vectors, matrices, and related algorithms
